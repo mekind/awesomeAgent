@@ -102,6 +102,32 @@
     details { margin: 14px 8px; }
     summary { cursor: pointer; color: var(--muted); }
     .history-row { padding: 6px 0; border-bottom: 1px solid var(--line); }
+    .runline { color: var(--muted); font-size: 11px; margin-top: 2px; }
+    .runs { margin: 8px 0 12px; display: flex; flex-direction: column; gap: 8px; }
+    .run-card { border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+    .run-head {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px 8px;
+      align-items: baseline;
+      margin: 0 0 6px;
+      font-size: 12px;
+    }
+    .run-head .n { font-weight: 650; }
+    .run-card p { margin: 3px 0; }
+    .k { color: var(--dim); }
+    .asks { margin: 2px 0 6px; padding-left: 18px; }
+    .check { margin: 4px 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 12px; }
+    .delegate {
+      display: grid;
+      grid-template-columns: 16px 78px minmax(120px, 1.2fr) minmax(80px, 0.8fr) 88px minmax(120px, 1fr);
+      gap: 6px;
+      padding: 2px 0;
+    }
+    .delegate > span { min-width: 0; }
+    .report { word-break: break-all; }
+    .run-warn { font-size: 12px; }
+    a { color: var(--done); }
   </style>
 </head>
 <body>
@@ -115,6 +141,7 @@
   <script>
     let board = null;
     let openKey = null;
+    let runsTimer = null;
     const $ = (id) => document.getElementById(id);
 
     function esc(value) {
@@ -125,6 +152,17 @@
 
     const GLYPH = { needs_you: "▲", working: "●", done: "✓", idle: "○" };
     const LABEL = { needs_you: "needs you", working: "working", done: "your move", idle: "idle" };
+    const RUN_LABEL = {
+      needs_you: "needs you", working: "working", waiting: "waiting",
+      your_move: "your move", interrupted: "interrupted", ended: "ended"
+    };
+    const DGLYPH = { needs_you: "▲", running: "●", failed: "✕", done: "✓", unknown: "·" };
+
+    function runLine(run) {
+      const book = run.playbook ? run.playbook.title + " (" + run.playbook.evidence + ")" : "playbook not recorded";
+      const trail = run.trail && run.trail.length > 1 ? run.trail.join(" → ") : book;
+      return "run " + run.n + " of " + run.count + " · " + trail + " · " + (run.reason || run.state);
+    }
     const SRC = { board: "board", "orca-task": "task", "vendor-title": "title", prompt: "prompt" };
 
     function rel(iso) {
@@ -136,6 +174,13 @@
       if (sec < 3600) return Math.floor(sec / 60) + "m";
       if (sec < 86400) return Math.floor(sec / 3600) + "h";
       return Math.floor(sec / 86400) + "d";
+    }
+
+    function hhmm(iso) {
+      const then = Date.parse(iso);
+      if (Number.isNaN(then)) return "";
+      const date = new Date(then);
+      return String(date.getHours()).padStart(2, "0") + ":" + String(date.getMinutes()).padStart(2, "0");
     }
 
     function color(vendor) {
@@ -156,6 +201,7 @@
               ${goal ? `<span class="src">${esc(SRC[goal.source] || goal.source)}</span>` : ""}
               ${agent.missing ? '<span class="src">missing</span>' : ""}
             </div>
+            ${agent.run ? `<div class="runline clip">${esc(runLine(agent.run))}</div>` : ""}
           </div>
           <div>${progress ? esc(progress.done + "/" + progress.total) : "·"}${progress ? `<span class="src">${esc(progress.source)}</span>` : ""}</div>
           <div class="reason clip">${esc(LABEL[agent.status] || agent.status)} · ${esc(agent.reason || "")}</div>
@@ -165,14 +211,16 @@
         <div class="fold" data-fold="${esc(agent.key)}" ${openKey === agent.key ? "" : "hidden"}></div>`;
     }
 
-    function fillFold(agent) {
-      const fold = document.querySelector(`[data-fold="${CSS.escape(agent.key)}"]`);
+    function fillFold(agent, root) {
+      const scope = root || document;
+      const fold = scope.querySelector(`[data-fold="${CSS.escape(agent.key)}"]`);
       if (!fold) return;
       const detail = agent.detail || {};
       const bits = [];
       bits.push(`<div class="muted">${esc(agent.key)}${detail.cwd ? " · " + esc(detail.cwd) : ""} · ${esc(agent.status_source)}</div>`);
       if (detail.last_prompt) bits.push(`<div><span class="muted">you</span> ${esc(detail.last_prompt.text)}</div>`);
       if (detail.last_reply) bits.push(`<div><span class="muted">reply</span> ${esc(detail.last_reply.text)}</div>`);
+      if (agent.run) bits.push(`<div id="runs-${sidOf(agent)}" class="runs"><div class="muted">loading runs…</div></div>`);
       if (agent.editable) {
         const sid = agent.key.replace(/[^a-zA-Z0-9_-]/g, "_");
         const todos = (detail.todos || []);
@@ -197,12 +245,145 @@
       fold.querySelectorAll("#todos-" + sidOf(agent) + " input").forEach((input) => {
         input.addEventListener("change", (event) => { event.stopPropagation(); saveTodos(agent); });
       });
+      if (agent.run) startRuns(agent.key);
+    }
+
+    function chip(text, detail) {
+      if (!text) return "";
+      const hover = detail ? ` title="${esc(detail)}"` : "";
+      return `<span class="src"${hover}>${esc(text)}</span>`;
+    }
+
+    function checkLine(step) {
+      const mark = String(step.mark || "").toLowerCase();
+      const text = step.text || "";
+      if (mark === "done" || mark === "x") return `[x] ${text}`;
+      if (mark === "skipped" || mark === "-" || mark === "skip") {
+        return /skip\s*:/i.test(text) ? `[-] ${text}` : `[-] skip ${text}`;
+      }
+      return `[ ] ${text}`;
+    }
+
+    function delegateResult(item) {
+      const result = item && item.result;
+      if (!result) return "result not observed";
+      if (typeof result === "string") return result;
+      return result.text || "result not observed";
+    }
+
+    function renderRuns(runs) {
+      const list = Array.isArray(runs) ? runs.slice() : [];
+      list.sort((a, b) => {
+        const na = Number(a && a.n);
+        const nb = Number(b && b.n);
+        if (Number.isFinite(na) && Number.isFinite(nb) && na !== nb) return nb - na;
+        return String((b && b.started_at) || "").localeCompare(String((a && a.started_at) || ""));
+      });
+      if (!list.length) return `<div class="muted">no poteto runs in this session</div>`;
+      return list.map((run) => {
+        const live = run.state === "working" || run.state === "waiting" || run.state === "needs_you";
+        const result = run.result || {};
+        const headline = result.headline;
+        const headlineText = headline && typeof headline === "object"
+          ? (headline.text || "result not observed")
+          : (headline ? String(headline) : "result not observed");
+        const headlineSource = typeof headline === "object" && headline
+          ? (headline.source || result.source)
+          : result.source;
+        const book = run.playbook;
+        const asks = run.asks || [];
+        const request = run.request && run.request.text ? run.request.text : "";
+        const started = hhmm(run.started_at);
+        const progress = run.progress;
+        const trail = run.trail || [];
+        const steps = run.checklist && run.checklist.steps;
+        const head = [
+          `<span class="n">#${esc(run.n)}</span>`,
+          started ? `<span class="when">${esc(started)}</span>` : "",
+          `<span>${esc(RUN_LABEL[run.state] || run.state)}</span>`,
+          run.reason ? `<span class="reason">${esc(run.reason)}</span>` : "",
+          book
+            ? `<span>${esc(book.title)}</span>${chip(book.evidence, book.detail)}`
+            : `<span class="muted">playbook not recorded</span>`,
+          progress ? `<span>${esc(progress.done + "/" + progress.total)}</span>${chip(progress.source)}` : "",
+          asks.length ? `<span class="muted">+${esc(asks.length)} follow-ups</span>` : ""
+        ].filter(Boolean).join("");
+        const askList = asks.length
+          ? `<ul class="asks muted">${asks.map((ask) => `<li>${esc(ask.text)}</li>`).join("")}</ul>`
+          : "";
+        const trailHtml = trail.length > 1
+          ? `<p>${trail.map((hit) => `${esc(hit.title)} ${chip(hit.evidence, hit.detail)}`).join(" → ")}</p>`
+          : "";
+        const checkHtml = steps && steps.length
+          ? `<div class="check">${steps.map((step) => `<div>${esc(checkLine(step))}</div>`).join("")}</div>`
+          : "";
+        const delegates = (run.delegates || []).map((item) => {
+          const text = delegateResult(item);
+          const report = item.report
+            ? `<div class="muted report">${esc(item.report)}</div>`
+            : "";
+          return `<div class="delegate"><span class="glyph">${DGLYPH[item.state] || "·"}</span><span>${esc(item.kind)}</span><span class="clip" title="${esc(item.title)}">${esc(item.title)}</span><span class="muted clip">${esc(item.who)}</span><span>${esc(item.state)}</span><span class="muted clip" title="${esc(text)}">${esc(text)}</span></div>${report}`;
+        }).join("");
+        const warnings = (run.roster || []).filter((item) => item.status !== "known").map((item) => {
+          return `<p class="muted run-warn">${esc(item.id)} · ${esc(item.reason || item.status)}</p>`;
+        }).join("");
+        const prs = (result.prs || []).map((pr) => {
+          return `<a href="${esc(pr.url)}" target="_blank" rel="noopener">${esc(pr.repo || "pr")} #${esc(pr.number)}</a>`;
+        }).join(" ");
+        return `<article class="run-card">
+          <div class="run-head">${head}</div>
+          ${request ? `<p class="clip" title="${esc(request)}">${esc(request)}</p>` : ""}
+          ${askList}
+          ${trailHtml}
+          ${checkHtml}
+          ${delegates}
+          ${warnings}
+          <p><span class="k">${live ? "latest" : "result"}</span> ${esc(headlineText)}${headlineSource ? ` ${chip(headlineSource)}` : ""}</p>
+          ${prs ? `<p>${prs}</p>` : ""}
+        </article>`;
+      }).join("");
+    }
+
+    function stopRuns() {
+      if (runsTimer) {
+        clearInterval(runsTimer);
+        runsTimer = null;
+      }
+    }
+
+    async function loadRuns(key) {
+      const slot = document.getElementById("runs-" + key.replace(/[^a-zA-Z0-9_-]/g, "_"));
+      if (!slot || openKey !== key) return;
+      try {
+        const response = await fetch("/api/runs?key=" + encodeURIComponent(key));
+        if (!response.ok) {
+          slot.textContent = "runs unavailable";
+          return;
+        }
+        const body = await response.json();
+        if (openKey !== key) return;
+        slot.innerHTML = renderRuns(body.runs || []);
+      } catch (err) {
+        slot.textContent = "runs refresh failed";
+      }
+    }
+
+    function startRuns(key) {
+      stopRuns();
+      loadRuns(key);
+      runsTimer = setInterval(() => {
+        if (!openKey || document.hidden) return;
+        loadRuns(openKey);
+      }, 5000);
     }
 
     function renderAgents(parent, agents, depth) {
       for (const agent of agents) {
+        if (agent.delegate_of) {
+          if (agent.children && agent.children.length) renderAgents(parent, agent.children, depth);
+          continue;
+        }
         parent.insertAdjacentHTML("beforeend", rowHtml(agent, depth));
-        if (openKey === agent.key) fillFold(agent);
         if (agent.children && agent.children.length) renderAgents(parent, agent.children, depth + 1);
       }
     }
@@ -228,7 +409,12 @@
         section.className = "group";
         section.innerHTML = `<h2><span class="glyph">${GLYPH[group.status] || "·"}</span> ${esc(group.name)} <span class="path">${esc(group.path)}</span> <span class="meta">${esc(group.orca_status || "")}</span></h2>`;
         renderAgents(section, group.agents || [], 0);
+        // The section is detached while rows are inserted, and the runs poll uses getElementById.
         main.appendChild(section);
+        if (openKey) {
+          const opened = findAgent(openKey, group.agents);
+          if (opened) fillFold(opened, section);
+        }
       }
       const history = board.history || [];
       const hidden = counts.hidden_spawned || 0;
@@ -245,6 +431,7 @@
       main.querySelectorAll(".row").forEach((row) => {
         row.addEventListener("click", () => {
           openKey = openKey === row.dataset.key ? null : row.dataset.key;
+          if (!openKey) stopRuns();
           render();
         });
       });
