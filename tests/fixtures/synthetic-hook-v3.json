@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "entries": {
+    "tab-wait:leaf-wait": {
+      "paneKey": "tab-wait:leaf-wait",
+      "agentPresence": {"agent": "grok"},
+      "providerSession": {"id": "should-not-join"}
+    }
+  }
+}

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Agent back office</title>
+  <style>
+    :root {
+      --bg: #101218;
+      --panel: #181c25;
+      --line: #2c3342;
+      --text: #e7ebf3;
+      --muted: #8d96aa;
+      --dim: #5e677a;
+      --need: #f0c14a;
+      --work: #7ee0a3;
+      --done: #8ab4ff;
+      --idle: #6b7384;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 13px/1.45 ui-sans-serif, system-ui, sans-serif;
+    }
+    header { padding: 16px 20px 10px; border-bottom: 1px solid var(--line); }
+    h1 { margin: 0 0 6px; font-size: 16px; font-weight: 650; }
+    .counts { display: flex; gap: 14px; color: var(--muted); flex-wrap: wrap; }
+    .counts b { color: var(--text); font-weight: 650; }
+    .need { color: var(--need); }
+    .work { color: var(--work); }
+    .done { color: var(--done); }
+    .banner {
+      margin: 10px 20px 0;
+      padding: 8px 10px;
+      border: 1px solid #6a5420;
+      background: #2a230f;
+      color: var(--need);
+      border-radius: 8px;
+    }
+    .problems { color: var(--muted); margin: 6px 20px 0; font-size: 12px; }
+    main { padding: 8px 12px 32px; }
+    .group { margin: 12px 0; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+    .group h2 {
+      margin: 0;
+      padding: 8px 12px;
+      background: var(--panel);
+      font-size: 13px;
+      display: flex;
+      gap: 10px;
+      align-items: baseline;
+    }
+    .group h2 .path, .group h2 .meta { color: var(--dim); font-weight: 450; font-size: 12px; }
+    .row {
+      display: grid;
+      grid-template-columns: 18px 64px minmax(180px, 1.4fr) 88px minmax(160px, 1fr) 72px 64px;
+      gap: 8px;
+      padding: 8px 12px;
+      border-top: 1px solid var(--line);
+      cursor: pointer;
+      align-items: start;
+    }
+    .row.idle { opacity: 0.55; }
+    .row.needs_you { background: #2a230f; }
+    .row:hover { background: #222836; }
+    .glyph { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .vendor { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; }
+    .clip { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .src, .sub {
+      color: var(--dim);
+      font-size: 11px;
+      margin-left: 6px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 6px;
+    }
+    .reason { color: var(--muted); }
+    .when { color: var(--dim); font-variant-numeric: tabular-nums; }
+    .editor, .detail { padding: 8px 12px 12px 38px; background: #141820; border-top: 1px solid var(--line); }
+    label { display: block; color: var(--muted); font-size: 11px; margin: 8px 0 4px; }
+    input[type=text] {
+      width: min(720px, 100%);
+      background: var(--bg);
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 7px 9px;
+      font: inherit;
+    }
+    button {
+      background: #2a3344;
+      color: var(--text);
+      border: 0;
+      border-radius: 6px;
+      padding: 6px 10px;
+      cursor: pointer;
+      font: inherit;
+    }
+    .todo { display: flex; gap: 8px; align-items: center; margin: 4px 0; }
+    .muted { color: var(--dim); }
+    details { margin: 14px 8px; }
+    summary { cursor: pointer; color: var(--muted); }
+    .history-row { padding: 6px 0; border-bottom: 1px solid var(--line); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="title">Agent back office</h1>
+    <div class="counts" id="counts">loading…</div>
+  </header>
+  <div id="banner"></div>
+  <div class="problems" id="problems"></div>
+  <main id="main"></main>
+  <script>
+    let board = null;
+    let openKey = null;
+    const $ = (id) => document.getElementById(id);
+
+    function esc(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (ch) => ({
+        "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+      }[ch]));
+    }
+
+    const GLYPH = { needs_you: "▲", working: "●", done: "✓", idle: "○" };
+    const LABEL = { needs_you: "needs you", working: "working", done: "your move", idle: "idle" };
+    const SRC = { board: "board", "orca-task": "task", "vendor-title": "title", prompt: "prompt" };
+
+    function rel(iso) {
+      if (!iso) return "";
+      const then = Date.parse(iso);
+      if (Number.isNaN(then)) return "";
+      const sec = Math.max(0, (Date.now() - then) / 1000);
+      if (sec < 45) return "just now";
+      if (sec < 3600) return Math.floor(sec / 60) + "m";
+      if (sec < 86400) return Math.floor(sec / 3600) + "h";
+      return Math.floor(sec / 86400) + "d";
+    }
+
+    function color(vendor) {
+      return (board && board.vendors && board.vendors[vendor]) || "#e7ebf3";
+    }
+
+    function rowHtml(agent, depth) {
+      const goal = agent.goal;
+      const progress = agent.progress;
+      const latest = agent.latest;
+      const pad = 12 + depth * 16;
+      return `
+        <div class="row ${esc(agent.status)}" data-key="${esc(agent.key)}" style="padding-left:${pad}px">
+          <div class="glyph">${GLYPH[agent.status] || "·"}</div>
+          <div class="vendor" style="color:${esc(color(agent.vendor))}">${esc(agent.vendor)}</div>
+          <div>
+            <div class="clip">${goal ? esc(goal.text) : '<span class="muted">goal?</span>'}
+              ${goal ? `<span class="src">${esc(SRC[goal.source] || goal.source)}</span>` : ""}
+              ${agent.missing ? '<span class="src">missing</span>' : ""}
+            </div>
+          </div>
+          <div>${progress ? esc(progress.done + "/" + progress.total) : "·"}${progress ? `<span class="src">${esc(progress.source)}</span>` : ""}</div>
+          <div class="reason clip">${esc(LABEL[agent.status] || agent.status)} · ${esc(agent.reason || "")}</div>
+          <div>${esc(agent.presence)}</div>
+          <div class="when">${esc(rel(agent.last_activity))}</div>
+        </div>
+        <div class="fold" data-fold="${esc(agent.key)}" ${openKey === agent.key ? "" : "hidden"}></div>`;
+    }
+
+    function fillFold(agent) {
+      const fold = document.querySelector(`[data-fold="${CSS.escape(agent.key)}"]`);
+      if (!fold) return;
+      const detail = agent.detail || {};
+      const bits = [];
+      bits.push(`<div class="muted">${esc(agent.key)}${detail.cwd ? " · " + esc(detail.cwd) : ""} · ${esc(agent.status_source)}</div>`);
+      if (detail.last_prompt) bits.push(`<div><span class="muted">you</span> ${esc(detail.last_prompt.text)}</div>`);
+      if (detail.last_reply) bits.push(`<div><span class="muted">reply</span> ${esc(detail.last_reply.text)}</div>`);
+      if (agent.editable) {
+        const sid = agent.key.replace(/[^a-zA-Z0-9_-]/g, "_");
+        const todos = (detail.todos || []);
+        bits.push(`
+          <div class="editor">
+            <label>board goal</label>
+            <input type="text" id="goal-${sid}" value="${esc(agent.goal && agent.goal.source === "board" ? agent.goal.text : (detail.todos ? "" : ""))}" placeholder="what this session is finishing" />
+            <div style="margin-top:8px"><button data-act="save-goal">Save goal</button></div>
+            <label>todos</label>
+            <div id="todos-${sid}">
+              ${todos.map((todo, i) => `<div class="todo"><input type="checkbox" data-i="${i}" ${todo.done ? "checked" : ""}/><input type="text" data-i="${i}" value="${esc(todo.text)}"/></div>`).join("")}
+            </div>
+            <div class="todo"><input type="text" id="newtodo-${sid}" placeholder="add a todo"/><button data-act="add-todo">Add</button></div>
+          </div>`);
+      }
+      fold.innerHTML = `<div class="detail">${bits.join("")}</div>`;
+      fold.querySelectorAll("input, button").forEach((el) => el.addEventListener("click", (event) => event.stopPropagation()));
+      const save = fold.querySelector("[data-act=save-goal]");
+      if (save) save.onclick = (event) => { event.stopPropagation(); saveGoal(agent); };
+      const add = fold.querySelector("[data-act=add-todo]");
+      if (add) add.onclick = (event) => { event.stopPropagation(); addTodo(agent); };
+      fold.querySelectorAll("#todos-" + sidOf(agent) + " input").forEach((input) => {
+        input.addEventListener("change", (event) => { event.stopPropagation(); saveTodos(agent); });
+      });
+    }
+
+    function renderAgents(parent, agents, depth) {
+      for (const agent of agents) {
+        parent.insertAdjacentHTML("beforeend", rowHtml(agent, depth));
+        if (openKey === agent.key) fillFold(agent);
+        if (agent.children && agent.children.length) renderAgents(parent, agent.children, depth + 1);
+      }
+    }
+
+    function render() {
+      const counts = board.counts || {};
+      const needs = counts.needs_you || 0;
+      document.title = (needs ? `(${needs}) ` : "") + "Agent back office";
+      $("title").textContent = "Agent back office";
+      $("counts").innerHTML = `
+        <span class="need"><b>${needs}</b> need you</span>
+        <span class="work"><b>${counts.working || 0}</b> working</span>
+        <span class="done"><b>${counts.done || 0}</b> your move</span>
+        <span><b>${counts.idle || 0}</b> idle</span>
+        <span class="muted">${board.orca && board.orca.up ? "Orca up" : "Orca offline"} · ${esc(board.took_ms)} ms</span>`;
+      $("banner").innerHTML = board.orca && board.orca.up ? "" : '<div class="banner">Orca offline: live state estimated from file activity</div>';
+      const problems = (board.orca && board.orca.problems) || [];
+      $("problems").textContent = problems.join(" · ");
+      const main = $("main");
+      main.innerHTML = "";
+      for (const group of board.groups || []) {
+        const section = document.createElement("section");
+        section.className = "group";
+        section.innerHTML = `<h2><span class="glyph">${GLYPH[group.status] || "·"}</span> ${esc(group.name)} <span class="path">${esc(group.path)}</span> <span class="meta">${esc(group.orca_status || "")}</span></h2>`;
+        renderAgents(section, group.agents || [], 0);
+        main.appendChild(section);
+      }
+      const history = board.history || [];
+      const hidden = counts.hidden_spawned || 0;
+      const box = document.createElement("details");
+      box.innerHTML = `<summary>History · ${history.length} sessions · ${hidden} spawned runs hidden</summary>`;
+      for (const agent of history) {
+        const goal = agent.goal ? agent.goal.text : agent.key;
+        const row = document.createElement("div");
+        row.className = "history-row";
+        row.textContent = `${agent.vendor}  ${goal}`;
+        box.appendChild(row);
+      }
+      main.appendChild(box);
+      main.querySelectorAll(".row").forEach((row) => {
+        row.addEventListener("click", () => {
+          openKey = openKey === row.dataset.key ? null : row.dataset.key;
+          render();
+        });
+      });
+    }
+
+    function sidOf(agent) {
+      return agent.key.replace(/[^a-zA-Z0-9_-]/g, "_");
+    }
+
+    async function saveGoal(agent) {
+      const text = document.getElementById("goal-" + sidOf(agent)).value.trim();
+      await fetch("/api/goal", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ key: agent.key, text })
+      });
+      await reload();
+    }
+
+    function collectTodos(agent) {
+      const root = document.getElementById("todos-" + sidOf(agent));
+      const existing = (agent.detail && agent.detail.todos) || [];
+      return [...root.querySelectorAll(".todo")].map((row, index) => ({
+        id: (existing[index] && existing[index].id) || String(index + 1),
+        text: row.querySelector("input[type=text]").value,
+        done: row.querySelector("input[type=checkbox]").checked
+      })).filter((todo) => todo.text.trim());
+    }
+
+    async function saveTodos(agent) {
+      await fetch("/api/todos", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ key: agent.key, todos: collectTodos(agent) })
+      });
+      openKey = agent.key;
+      await reload();
+    }
+
+    async function addTodo(agent) {
+      const input = document.getElementById("newtodo-" + sidOf(agent));
+      const text = input.value.trim();
+      if (!text) return;
+      const todos = ((agent.detail && agent.detail.todos) || []).concat([{ id: crypto.randomUUID(), text, done: false }]);
+      await fetch("/api/todos", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ key: agent.key, todos })
+      });
+      openKey = agent.key;
+      await reload();
+    }
+
+    function findAgent(key, nodes) {
+      for (const agent of nodes || []) {
+        if (agent.key === key) return agent;
+        const child = findAgent(key, agent.children);
+        if (child) return child;
+      }
+      return null;
+    }
+
+    async function reload() {
+      const response = await fetch("/api/board");
+      board = await response.json();
+      render();
+    }
+
+    async function tick() {
+      if (document.hidden || openKey) return;
+      try { await reload(); } catch (err) { $("counts").textContent = "refresh failed"; }
+    }
+
+    reload();
+    setInterval(tick, 5000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) tick(); });
+  </script>
+</body>
+</html>

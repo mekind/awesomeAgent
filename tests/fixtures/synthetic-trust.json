@@ -1,0 +1,22 @@
+{
+  "worktrees": {"result": {"worktrees": []}},
+  "terminals": {
+    "result": {
+      "terminals": [
+        {
+          "tabId": "tab-trust",
+          "leafId": "leaf-trust",
+          "agentIdentity": "codex",
+          "connected": true,
+          "orphaned": false,
+          "handle": "term_trust",
+          "worktreeId": "wt-trust",
+          "worktreePath": "/Users/me/WorkSpace/awesomeAgent",
+          "title": "codex",
+          "preview": "Trust all and continue",
+          "lastOutputAt": 1793517312000
+        }
+      ]
+    }
+  }
+}

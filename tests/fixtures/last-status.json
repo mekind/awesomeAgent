@@ -1,0 +1,554 @@
+{
+  "version": 2,
+  "entries": {
+    "652a559f-f9b9-4af7-93aa-ee6811d2cbc6:4900a1e0-a23e-4520-b7a4-76ff7596366b": {
+      "paneKey": "652a559f-f9b9-4af7-93aa-ee6811d2cbc6:4900a1e0-a23e-4520-b7a4-76ff7596366b",
+      "agentPresence": {
+        "agent": "claude",
+        "session": "6d9fcc6e-c602-4f07-9405-f9f01c91d6dd"
+      },
+      "source": "claude",
+      "tabId": "652a559f-f9b9-4af7-93aa-ee6811d2cbc6",
+      "worktreeId": "929cc08b-efe3-4132-94de-66d4e4997f48::/Users/me/WorkSpace/ai_top_100",
+      "connectionId": null,
+      "hookEventName": "SubagentStop",
+      "providerPromptId": "cfe93bca-443d-4238-b317-0167e13f0151",
+      "toolAgentId": "acce0ddf655d8f23d",
+      "claudeRunningNonAgentTask": false,
+      "providerSession": {
+        "key": "session_id",
+        "id": "6d9fcc6e-c602-4f07-9405-f9f01c91d6dd",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/WorkSpace/ai_top_100",
+        "effort": "medium"
+      },
+      "payload": {
+        "state": "done",
+        "prompt": "<prompt>",
+        "agentType": "claude",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "lastAssistantMessage": "<lastAssistantMessage>",
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793408333821
+        }
+      },
+      "receivedAt": 1793408516936,
+      "stateStartedAt": 1793408333822,
+      "turnStartedAt": 1793408275883,
+      "turnEndedAt": 1793408333822,
+      "turnEndDisposition": "identified",
+      "hostTurn": {
+        "owner": "claude:6d9fcc6e-c602-4f07-9405-f9f01c91d6dd",
+        "currentTurnKey": "opened:1793408275883",
+        "completed": {
+          "turnKey": "opened:1793408275883",
+          "endedAt": 1793408333822
+        }
+      }
+    },
+    "0fa8a77d-92d6-45cd-ab43-fa0137bc95ee:4ed71c7a-1650-47dd-a75f-cc309c6c9725": {
+      "paneKey": "0fa8a77d-92d6-45cd-ab43-fa0137bc95ee:4ed71c7a-1650-47dd-a75f-cc309c6c9725",
+      "source": "grok",
+      "agentPresence": {
+        "agent": "grok"
+      },
+      "tabId": "0fa8a77d-92d6-45cd-ab43-fa0137bc95ee",
+      "worktreeId": "929cc08b-efe3-4132-94de-66d4e4997f48::/Users/me/WorkSpace/ai_top_100",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "Notification",
+      "providerPromptId": "460c00f9-a00a-486e-a4a7-484d10d9e7ca",
+      "grokPromptBoundary": true,
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a18fb7-56ad-7190-9fa9-981e07faac3a"
+      },
+      "payload": {
+        "state": "done",
+        "prompt": "<prompt>",
+        "agentType": "grok",
+        "toolName": "run_terminal_command",
+        "toolInput": "<toolInput>",
+        "lastAssistantMessage": "<lastAssistantMessage>",
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793447844971
+        }
+      },
+      "receivedAt": 1793447905217,
+      "evidenceObservedAt": 1793447905217,
+      "stateStartedAt": 1793447844972,
+      "turnStartedAt": 1793447816847,
+      "turnEndedAt": 1793447844972,
+      "turnEndDisposition": "identified",
+      "hostTurn": {
+        "owner": "grok:01a18fb7-56ad-7190-9fa9-981e07faac3a",
+        "currentTurnKey": "opened:1793447816847",
+        "completed": {
+          "turnKey": "opened:1793447816847",
+          "endedAt": 1793447844972
+        }
+      }
+    },
+    "ffef7499-379a-4587-8150-98e9f2675ab9:6b22d99e-5bcb-444d-98fa-96f686dd12de": {
+      "paneKey": "ffef7499-379a-4587-8150-98e9f2675ab9:6b22d99e-5bcb-444d-98fa-96f686dd12de",
+      "source": "claude",
+      "agentPresence": {
+        "agent": "claude"
+      },
+      "tabId": "ffef7499-379a-4587-8150-98e9f2675ab9",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/WorkSpace/quant-trading",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "PreToolUse",
+      "providerPromptId": "667809ea-354c-4d0d-8fc5-b4546ac94d99",
+      "toolUseId": "toolu_014sSDQWQeqfmrNCW2PTG4oP",
+      "providerSession": {
+        "key": "session_id",
+        "id": "b6ee3f68-0eda-44b1-817d-832ddde7184d",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/WorkSpace/quant-trading",
+        "effort": "medium"
+      },
+      "payload": {
+        "state": "working",
+        "prompt": "<prompt>",
+        "agentType": "claude",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "mainAgent": {
+          "state": "working",
+          "stateStartedAt": 1793516510048
+        }
+      },
+      "claudeRunningNonAgentTask": true,
+      "receivedAt": 1793517318788,
+      "evidenceObservedAt": 1793517318788,
+      "stateStartedAt": 1793516426270,
+      "turnStartedAt": 1793517297486,
+      "hostTurn": {
+        "owner": "claude:b6ee3f68-0eda-44b1-817d-832ddde7184d",
+        "currentTurnKey": "opened:1793517297486",
+        "completed": {
+          "turnKey": "opened:1793516398590",
+          "endedAt": 1793516411815
+        }
+      }
+    },
+    "9232d96a-f098-4c9a-82fe-74a828544d0c:c29f2a5f-cc50-4432-8ce0-d21b6e8094b3": {
+      "paneKey": "9232d96a-f098-4c9a-82fe-74a828544d0c:c29f2a5f-cc50-4432-8ce0-d21b6e8094b3",
+      "source": "grok",
+      "agentPresence": {
+        "agent": "grok"
+      },
+      "tabId": "9232d96a-f098-4c9a-82fe-74a828544d0c",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/orca/workspaces/quant-trading/quant-skeleton",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "Notification",
+      "providerPromptId": "96dde92a-87c8-4367-81bd-23942393bbc1",
+      "grokPromptBoundary": true,
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a195d2-d126-71d0-8d77-ea2cc7129f8d"
+      },
+      "payload": {
+        "state": "done",
+        "prompt": "<prompt>",
+        "agentType": "grok",
+        "toolName": "run_terminal_command",
+        "toolInput": "<toolInput>",
+        "lastAssistantMessage": "<lastAssistantMessage>",
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793515749495
+        }
+      },
+      "receivedAt": 1793515809811,
+      "evidenceObservedAt": 1793515809811,
+      "stateStartedAt": 1793515749495,
+      "turnStartedAt": 1793514984434,
+      "turnEndedAt": 1793515749495,
+      "turnEndDisposition": "identified",
+      "hostTurn": {
+        "owner": "grok:01a195d2-d126-71d0-8d77-ea2cc7129f8d",
+        "currentTurnKey": "opened:1793514984434",
+        "completed": {
+          "turnKey": "opened:1793514984434",
+          "endedAt": 1793515749495
+        }
+      }
+    },
+    "bd8549b9-3cfa-4be1-9984-7730a11dba69:2353c56c-77f0-41e0-b782-799766723599": {
+      "paneKey": "bd8549b9-3cfa-4be1-9984-7730a11dba69:2353c56c-77f0-41e0-b782-799766723599",
+      "source": "claude",
+      "agentPresence": {
+        "agent": "claude"
+      },
+      "tabId": "bd8549b9-3cfa-4be1-9984-7730a11dba69",
+      "worktreeId": "29089312-67ba-4178-b1bc-a0177bc3da81::/Users/me/WorkSpace/my-site",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "SubagentStop",
+      "providerPromptId": "f4ae66d5-9a1b-4a2e-bd29-abe4288121d5",
+      "toolAgentId": "a3540c2f9e9b18142",
+      "providerSession": {
+        "key": "session_id",
+        "id": "041b64f0-749a-4f26-b561-5e25b45be044",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/WorkSpace/my-site",
+        "effort": "medium"
+      },
+      "payload": {
+        "state": "working",
+        "workingMode": "monitoring",
+        "prompt": "<prompt>",
+        "agentType": "claude",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "lastAssistantMessage": "<lastAssistantMessage>",
+        "turnCompletedAt": 1793515613917,
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793515613917
+        }
+      },
+      "claudeRunningNonAgentTask": true,
+      "receivedAt": 1793515795895,
+      "evidenceObservedAt": 1793515795895,
+      "stateStartedAt": 1793515601156,
+      "turnStartedAt": 1793515601156,
+      "hostTurn": {
+        "owner": "claude:041b64f0-749a-4f26-b561-5e25b45be044",
+        "currentTurnKey": "opened:1793515601156",
+        "completed": {
+          "turnKey": "opened:1793515027587",
+          "endedAt": 1793515512374
+        }
+      }
+    },
+    "f6f627cf-0270-47fd-b100-399ec3e98884:2e1c6a72-0357-4910-88c9-1b0d167394e7": {
+      "paneKey": "f6f627cf-0270-47fd-b100-399ec3e98884:2e1c6a72-0357-4910-88c9-1b0d167394e7",
+      "source": "claude",
+      "agentPresence": {
+        "agent": "claude"
+      },
+      "tabId": "f6f627cf-0270-47fd-b100-399ec3e98884",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "PreToolUse",
+      "providerPromptId": "fa55fe35-5760-491a-bb8b-95a7400c7141",
+      "toolUseId": "toolu_013T4Rse8YyCAaFEbE59yGzv",
+      "providerSession": {
+        "key": "session_id",
+        "id": "bbe21637-8b94-45c7-a651-dfb4f59ea21c",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/WorkSpace/awesomeAgent",
+        "effort": "medium"
+      },
+      "payload": {
+        "state": "working",
+        "prompt": "<prompt>",
+        "agentType": "claude",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "mainAgent": {
+          "state": "working",
+          "stateStartedAt": 1793517312969
+        }
+      },
+      "claudeRunningNonAgentTask": true,
+      "receivedAt": 1793517363165,
+      "evidenceObservedAt": 1793517363165,
+      "stateStartedAt": 1793516768486,
+      "turnStartedAt": 1793517312969,
+      "hostTurn": {
+        "owner": "claude:bbe21637-8b94-45c7-a651-dfb4f59ea21c",
+        "currentTurnKey": "opened:1793517312969",
+        "completed": {
+          "turnKey": "opened:1793515496721",
+          "endedAt": 1793515520796
+        }
+      }
+    },
+    "e8d6d756-4584-4dbb-86d0-8d07b8d8cee5:bed10fb4-37e2-4005-ac36-375f19fd2f08": {
+      "paneKey": "e8d6d756-4584-4dbb-86d0-8d07b8d8cee5:bed10fb4-37e2-4005-ac36-375f19fd2f08",
+      "source": "grok",
+      "agentPresence": {
+        "agent": "grok"
+      },
+      "tabId": "e8d6d756-4584-4dbb-86d0-8d07b8d8cee5",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/orca/workspaces/quant-trading/interrogate-grok",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "PostToolUse",
+      "providerPromptId": "f15a2ac8-93e9-467e-b197-c2b85e2c7f65",
+      "grokPromptBoundary": true,
+      "toolUseId": "call-6ee5c6e5-aeb5-48fb-9bce-90342225dd16-39",
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a195ea-b55f-7162-9a84-03b41b7aa0e3"
+      },
+      "payload": {
+        "state": "working",
+        "prompt": "<prompt>",
+        "agentType": "grok",
+        "toolName": "read_file",
+        "mainAgent": {
+          "state": "working",
+          "stateStartedAt": 1793516550170
+        }
+      },
+      "receivedAt": 1793517044414,
+      "evidenceObservedAt": 1793517044414,
+      "stateStartedAt": 1793516549992,
+      "turnStartedAt": 1793516550170,
+      "hostTurn": {
+        "owner": "grok:01a195ea-b55f-7162-9a84-03b41b7aa0e3",
+        "currentTurnKey": "opened:1793516550170"
+      }
+    },
+    "4c5845d8-205b-49b3-ada7-84e52bbadad8:d67e88e1-df09-4536-a0e3-22708e9a1e28": {
+      "paneKey": "4c5845d8-205b-49b3-ada7-84e52bbadad8:d67e88e1-df09-4536-a0e3-22708e9a1e28",
+      "source": "codex",
+      "agentPresence": {
+        "agent": "codex",
+        "session": "01a195ea-e4b7-7d31-8075-3d15b8ea8400"
+      },
+      "tabId": "4c5845d8-205b-49b3-ada7-84e52bbadad8",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/orca/workspaces/quant-trading/interrogate-codex",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "Stop",
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a195ea-e4b7-7d31-8075-3d15b8ea8400",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/orca/workspaces/quant-trading/interrogate-codex"
+      },
+      "payload": {
+        "state": "done",
+        "prompt": "<prompt>",
+        "agentType": "codex",
+        "model": "gpt-6-luna",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793516706487
+        }
+      },
+      "receivedAt": 1793516706487,
+      "evidenceObservedAt": 1793516706487,
+      "stateStartedAt": 1793516706487,
+      "turnStartedAt": 1793516571041,
+      "turnEndedAt": 1793516706487,
+      "turnEndDisposition": "identified",
+      "hostTurn": {
+        "owner": "codex:01a195ea-e4b7-7d31-8075-3d15b8ea8400",
+        "currentTurnKey": "turn:01a195eb-0471-7580-b519-7417e0f6a0fd",
+        "completed": {
+          "turnKey": "turn:01a195eb-0471-7580-b519-7417e0f6a0fd",
+          "endedAt": 1793516706487
+        }
+      }
+    },
+    "81383bef-63d1-406a-ae1e-c8067063b367:f8487ab1-5ab5-477f-9f8e-2c521a3873d4": {
+      "paneKey": "81383bef-63d1-406a-ae1e-c8067063b367:f8487ab1-5ab5-477f-9f8e-2c521a3873d4",
+      "source": "grok",
+      "agentPresence": {
+        "agent": "grok"
+      },
+      "tabId": "81383bef-63d1-406a-ae1e-c8067063b367",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "Stop",
+      "providerPromptId": "26503b8c-4288-4876-a435-6dfcc62cf46f",
+      "grokPromptBoundary": true,
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a195ee-6b95-7833-b7a8-fae3444f6a7e"
+      },
+      "payload": {
+        "state": "done",
+        "prompt": "<prompt>",
+        "agentType": "grok",
+        "toolName": "run_terminal_command",
+        "toolInput": "<toolInput>",
+        "lastAssistantMessage": "<lastAssistantMessage>",
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793517318783
+        }
+      },
+      "receivedAt": 1793517318783,
+      "evidenceObservedAt": 1793517318783,
+      "stateStartedAt": 1793517318783,
+      "turnStartedAt": 1793516793416,
+      "turnEndedAt": 1793517318783,
+      "turnEndDisposition": "identified",
+      "hostTurn": {
+        "owner": "grok:01a195ee-6b95-7833-b7a8-fae3444f6a7e",
+        "currentTurnKey": "opened:1793516793416",
+        "completed": {
+          "turnKey": "opened:1793516793416",
+          "endedAt": 1793517318783
+        }
+      }
+    },
+    "a4aae434-64a0-4ae6-b43e-1420ba4f801e:5e4de07b-65da-4cdd-a880-437e55f04a30": {
+      "paneKey": "a4aae434-64a0-4ae6-b43e-1420ba4f801e:5e4de07b-65da-4cdd-a880-437e55f04a30",
+      "source": "codex",
+      "agentPresence": {
+        "agent": "codex",
+        "session": "01a195ee-7b42-7570-b884-41c2f49de6fc"
+      },
+      "tabId": "a4aae434-64a0-4ae6-b43e-1420ba4f801e",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "Stop",
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a195ee-7b42-7570-b884-41c2f49de6fc",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/WorkSpace/awesomeAgent"
+      },
+      "payload": {
+        "state": "done",
+        "prompt": "<prompt>",
+        "agentType": "codex",
+        "model": "gpt-6-luna",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "mainAgent": {
+          "state": "done",
+          "stateStartedAt": 1793517012366
+        }
+      },
+      "receivedAt": 1793517012367,
+      "evidenceObservedAt": 1793517012367,
+      "stateStartedAt": 1793517012367,
+      "turnStartedAt": 1793516806509,
+      "turnEndedAt": 1793517012367,
+      "turnEndDisposition": "identified",
+      "hostTurn": {
+        "owner": "codex:01a195ee-7b42-7570-b884-41c2f49de6fc",
+        "currentTurnKey": "turn:01a195ee-9be8-7143-b34f-6b6441d664bc",
+        "completed": {
+          "turnKey": "turn:01a195ee-9be8-7143-b34f-6b6441d664bc",
+          "endedAt": 1793517012367
+        }
+      }
+    },
+    "40b71cd5-8587-4c14-a88d-836a40f4ae5b:cc7158cb-d115-4e05-92f7-5cfb7ada1e56": {
+      "paneKey": "40b71cd5-8587-4c14-a88d-836a40f4ae5b:cc7158cb-d115-4e05-92f7-5cfb7ada1e56",
+      "source": "codex",
+      "agentPresence": {
+        "agent": "codex",
+        "session": "01a195f6-d07f-7501-8236-31f0ece864ac"
+      },
+      "tabId": "40b71cd5-8587-4c14-a88d-836a40f4ae5b",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "connectionId": null,
+      "hasExplicitPrompt": false,
+      "hookEventName": "PreToolUse",
+      "toolUseId": "exec-6b4ac03d-b07c-4efb-98a4-d259b84da8fa",
+      "providerSession": {
+        "key": "session_id",
+        "id": "01a195f6-d07f-7501-8236-31f0ece864ac",
+        "transcriptPath": "<transcriptPath>",
+        "cwd": "/Users/me/WorkSpace/awesomeAgent"
+      },
+      "payload": {
+        "state": "working",
+        "prompt": "<prompt>",
+        "agentType": "codex",
+        "model": "gpt-6-luna",
+        "toolName": "Bash",
+        "toolInput": "<toolInput>",
+        "mainAgent": {
+          "state": "working",
+          "stateStartedAt": 1793517352095
+        }
+      },
+      "receivedAt": 1793517363375,
+      "evidenceObservedAt": 1793517363375,
+      "stateStartedAt": 1793517352095,
+      "turnStartedAt": 1793517352489,
+      "hostTurn": {
+        "owner": "codex:01a195f6-d07f-7501-8236-31f0ece864ac",
+        "currentTurnKey": "turn:01a195f6-f24c-7241-bdfc-3ade2d5fb33e"
+      }
+    }
+  },
+  "authorityCommitments": {
+    "652a559f-f9b9-4af7-93aa-ee6811d2cbc6:4900a1e0-a23e-4520-b7a4-76ff7596366b": {
+      "paneKey": "652a559f-f9b9-4af7-93aa-ee6811d2cbc6:4900a1e0-a23e-4520-b7a4-76ff7596366b",
+      "connectionId": null,
+      "tabId": "652a559f-f9b9-4af7-93aa-ee6811d2cbc6",
+      "worktreeId": "929cc08b-efe3-4132-94de-66d4e4997f48::/Users/me/WorkSpace/ai_top_100",
+      "observedAt": 1793408516936
+    },
+    "0fa8a77d-92d6-45cd-ab43-fa0137bc95ee:4ed71c7a-1650-47dd-a75f-cc309c6c9725": {
+      "paneKey": "0fa8a77d-92d6-45cd-ab43-fa0137bc95ee:4ed71c7a-1650-47dd-a75f-cc309c6c9725",
+      "connectionId": null,
+      "tabId": "0fa8a77d-92d6-45cd-ab43-fa0137bc95ee",
+      "worktreeId": "929cc08b-efe3-4132-94de-66d4e4997f48::/Users/me/WorkSpace/ai_top_100",
+      "observedAt": 1793447905217
+    },
+    "9232d96a-f098-4c9a-82fe-74a828544d0c:c29f2a5f-cc50-4432-8ce0-d21b6e8094b3": {
+      "paneKey": "9232d96a-f098-4c9a-82fe-74a828544d0c:c29f2a5f-cc50-4432-8ce0-d21b6e8094b3",
+      "connectionId": null,
+      "tabId": "9232d96a-f098-4c9a-82fe-74a828544d0c",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/orca/workspaces/quant-trading/quant-skeleton",
+      "observedAt": 1793515809811
+    },
+    "f6f627cf-0270-47fd-b100-399ec3e98884:2e1c6a72-0357-4910-88c9-1b0d167394e7": {
+      "paneKey": "f6f627cf-0270-47fd-b100-399ec3e98884:2e1c6a72-0357-4910-88c9-1b0d167394e7",
+      "connectionId": null,
+      "tabId": "f6f627cf-0270-47fd-b100-399ec3e98884",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "observedAt": 1793517363165
+    },
+    "e8d6d756-4584-4dbb-86d0-8d07b8d8cee5:bed10fb4-37e2-4005-ac36-375f19fd2f08": {
+      "paneKey": "e8d6d756-4584-4dbb-86d0-8d07b8d8cee5:bed10fb4-37e2-4005-ac36-375f19fd2f08",
+      "connectionId": null,
+      "tabId": "e8d6d756-4584-4dbb-86d0-8d07b8d8cee5",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/orca/workspaces/quant-trading/interrogate-grok",
+      "observedAt": 1793517044414
+    },
+    "4c5845d8-205b-49b3-ada7-84e52bbadad8:d67e88e1-df09-4536-a0e3-22708e9a1e28": {
+      "paneKey": "4c5845d8-205b-49b3-ada7-84e52bbadad8:d67e88e1-df09-4536-a0e3-22708e9a1e28",
+      "connectionId": null,
+      "tabId": "4c5845d8-205b-49b3-ada7-84e52bbadad8",
+      "worktreeId": "5904ba5b-a4d9-4bcc-b4ab-00a9b4558632::/Users/me/orca/workspaces/quant-trading/interrogate-codex",
+      "observedAt": 1793516706487
+    },
+    "81383bef-63d1-406a-ae1e-c8067063b367:f8487ab1-5ab5-477f-9f8e-2c521a3873d4": {
+      "paneKey": "81383bef-63d1-406a-ae1e-c8067063b367:f8487ab1-5ab5-477f-9f8e-2c521a3873d4",
+      "connectionId": null,
+      "tabId": "81383bef-63d1-406a-ae1e-c8067063b367",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "observedAt": 1793517318783
+    },
+    "a4aae434-64a0-4ae6-b43e-1420ba4f801e:5e4de07b-65da-4cdd-a880-437e55f04a30": {
+      "paneKey": "a4aae434-64a0-4ae6-b43e-1420ba4f801e:5e4de07b-65da-4cdd-a880-437e55f04a30",
+      "connectionId": null,
+      "tabId": "a4aae434-64a0-4ae6-b43e-1420ba4f801e",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "observedAt": 1793517012367
+    },
+    "40b71cd5-8587-4c14-a88d-836a40f4ae5b:cc7158cb-d115-4e05-92f7-5cfb7ada1e56": {
+      "paneKey": "40b71cd5-8587-4c14-a88d-836a40f4ae5b:cc7158cb-d115-4e05-92f7-5cfb7ada1e56",
+      "connectionId": null,
+      "tabId": "40b71cd5-8587-4c14-a88d-836a40f4ae5b",
+      "worktreeId": "20a760d6-221a-458f-87bc-9afcb2a847b4::/Users/me/WorkSpace/awesomeAgent",
+      "observedAt": 1793517363375
+    }
+  }
+}

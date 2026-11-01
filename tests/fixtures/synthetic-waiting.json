@@ -1,0 +1,29 @@
+{
+  "worktrees": {
+    "result": {
+      "worktrees": [
+        {
+          "worktreeId": "wt-wait",
+          "displayName": "demo",
+          "path": "/Users/me/WorkSpace/demo",
+          "workspaceStatus": "in-progress",
+          "unread": false,
+          "agents": [
+            {
+              "paneKey": "tab-wait:leaf-wait",
+              "agentType": "grok",
+              "state": "waiting",
+              "hasLivePty": true,
+              "taskTitle": "wait for trust",
+              "programStatus": {"state": "blocked", "message": "Trust this folder?"},
+              "parentPaneKey": null,
+              "updatedAt": 1793517312000,
+              "stateStartedAt": 1793517000000
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "terminals": {"result": {"terminals": []}}
+}

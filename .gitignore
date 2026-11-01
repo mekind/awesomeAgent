@@ -1,0 +1,7 @@
+__pycache__/
+.DS_Store
+.arena/
+.omx/
+.playwright-mcp/
+data/
+*.tmp
