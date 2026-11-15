@@ -276,23 +276,21 @@ def iter_json_lines(text: str, *, reverse: bool = False) -> Iterator[Any]:
             continue
 
 
-_CACHE: dict[tuple[Any, ...], Any] = {}
+_CACHE: dict[tuple[str, str, str], tuple[tuple[int, int], Any]] = {}
 
 
 def cached(path: Path, parse: Callable[[Path], Any], extra: str = "") -> Any:
-    # One entry per path. A transcript is re-read every refresh, and keeping every stamp would grow without bound.
     try:
         st = path.stat()
     except OSError:
         return parse(path)
-    identity = (str(path), getattr(parse, "__qualname__", ""), extra)
-    key = (*identity, int(st.st_mtime_ns), st.st_size)
-    if key in _CACHE:
-        return _CACHE[key]
+    key = (str(path), getattr(parse, "__qualname__", ""), extra)
+    stamp = (int(st.st_mtime_ns), st.st_size)
+    hit = _CACHE.get(key)
+    if hit and hit[0] == stamp:
+        return hit[1]
     value = parse(path)
-    for old in [item for item in _CACHE if item[:3] == identity and item != key]:
-        del _CACHE[old]
-    _CACHE[key] = value
+    _CACHE[key] = (stamp, value)
     return value
 
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import io
 import json
+import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
@@ -151,6 +152,14 @@ class BoardBehaviorTest(unittest.TestCase):
         self.assertEqual(len(match), 1)
         self.assertFalse(match[0]["missing"])
         self.assertEqual(match[0]["goal"]["text"], "disk session survives orca down")
+
+    def test_cache_keeps_one_entry_per_growing_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp, patch.dict(board._CACHE, clear=True):
+            path = Path(tmp) / "live.jsonl"
+            for lines in range(1, 51):
+                path.write_text("x\n" * lines, encoding="utf-8")
+                self.assertEqual(board.cached(path, lambda p: p.read_text().count("x")), lines)
+            self.assertEqual(len(board._CACHE), 1)
 
 
 class _OrcaProc:
